@@ -1,18 +1,11 @@
 import mongoose, { model } from "mongoose";
-
-interface userData {
-  fullName: string;
-  email: string;
-  password: string;
-  isAdmin: boolean;
-  stack: string;
-}
+import { userData } from "../Interface/user.interface";
 
 interface iuserData extends userData, mongoose.Document {}
 
 const userSchema = new mongoose.Schema(
   {
-    fullName: {
+    name: {
       type: String,
       required: [true, "please enter your full Name"],
     },
@@ -27,13 +20,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please, enter a password"],
       minlength: 6,
-    },
-    stack: {
-      type: String,
-    },
-    isAdmin: {
-      type: Boolean,
-      default: false,
     },
   },
   { timestamps: true }
