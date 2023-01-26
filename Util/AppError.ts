@@ -11,8 +11,8 @@ export enum HttpCode {
 
 interface AppErrorArguments {
   name?: string;
-  isOperational: boolean;
-  message?: string;
+  isOperational?: boolean;
+  message: string;
   httpCode: HttpCode;
 }
 
@@ -29,7 +29,7 @@ export class AppError extends Error {
     this.name = args.name || "Error"
     this.httpCode = args.httpCode
 
-    if (this.isOperational !== undefined) {
+    if (args.isOperational !== undefined) {
       this.isOperational = args.isOperational
     }
 

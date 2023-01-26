@@ -1,4 +1,5 @@
 import mongoose, { model } from "mongoose";
+import isEmail from "validator/lib/isEmail";
 import { userData } from "../Interface/user.interface";
 
 interface iuserData extends userData, mongoose.Document {}
@@ -15,6 +16,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      validate: [isEmail, "Please enter a valid email"],
     },
     password: {
       type: String,
@@ -22,7 +24,7 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 const userModel = model<iuserData>("User", userSchema);

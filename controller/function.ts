@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { asyncHandler } from "../Util/asyncHandler";
 import { userData } from "../Interface/user.interface";
 import { AppError, HttpCode } from "../Util/AppError";
+import { loginValidation, userDataValidaton } from "../validator/validator";
 
 export const register = asyncHandler(
   async (
@@ -12,6 +13,18 @@ export const register = asyncHandler(
     next: NextFunction
   ): Promise<Response> => {
     // genetate encrypted password
+
+    const validateUser = userDataValidaton(req.body);
+    console.log(validateUser);
+
+    if (validateUser.error) {
+      next(
+        new AppError({
+          message: "Invalid Input",
+          httpCode: HttpCode.Bad_Request,
+        })
+      );
+    }
 
     const { name, password, email } = req.body;
     const salt: string = await bcrypt.genSalt(10);
@@ -47,7 +60,19 @@ export const login = asyncHandler(
   ): Promise<Response> => {
     try {
       const { email, password } = req.body;
+      const loginValidate = loginValidation({ email, password });
       const user = await userModel.findOne({ email });
+
+      if (loginValidate) {
+        next(
+          new AppError({
+            message: "Not created",
+            httpCode: HttpCode.Unauthorized,
+            isOperational: true,
+          })
+        );
+      }
+
       const checkPassword = await bcrypt.compare(password, user!.password);
       if (!email && !checkPassword) {
         next(
